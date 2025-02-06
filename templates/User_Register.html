@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Registeration</title>
+</head>
+<body>
+<form action="/uregister" method="POST" onsubmit="return check_pwd()">
+    First Name : <input type="tel" name="f_name">
+    Last Name : <input type="text" name="l_name">
+    Email : <input type="email" name="email">
+    Phone No : <input type="number" name="phoneno" size="10">
+    Password : <input type="password" name="pwd" id="pwd">
+    Confirm_Password  : <input type="password" name="cpwd" id="cpwd">
+    <input type="submit" value="Register">
+</form>
+<script>
+    function check_pwd(){
+        const p1=document.getElementById("pwd")[0];
+        const p2=document.getElementById("cpwd")[0];
+        console.log(p1);
+        console.log(p2);
+        if(p1==p2){
+
+        return true;
+        }
+        else{
+        alert("Password don't match")
+        return false;
+        }
+    }
+</script>
+
+</body>
+</html>
