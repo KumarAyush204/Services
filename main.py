@@ -1,16 +1,29 @@
 from flask import Flask,render_template,request,redirect,url_for,flash
 from models import db,User,Professional,Admin
 from flask_login import LoginManager,login_user,login_required,current_user,logout_user
+from flask_mail import Mail,Message
+from flask_socketio import SocketIO,emit
+
 app=Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///app.db"
 app.config["SECRET_KEY"]="#bfkfabwksj%1212"
 db.init_app(app)
 
-
 #Login
 login_manager = LoginManager()
 login_manager.init_app(app)
 # login_manager.login_view='login'
+
+#Email
+app.config["MAIL_SERVER"]="smtp.gmail.com"
+app.config["MAIL_PORT"]=465
+app.config["MAIL_USE_TTL"]=False
+app.config["MAIL_USE_SSL"]=True
+app.config["MAIL_USERNAME"]="ayushgame2910@gmail.com"
+app.config["MAIL_PASSWORD"]="xfgb tsef ytli mrih"
+mail=Mail(app)
+
+socketio=SocketIO(app)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -151,13 +164,12 @@ def professional_register():
 @app.route('/uprofile')
 @login_required
 def uprofile():
-    return render_template("U_Profile.html",email=current_user.u_email)
+    return render_template("U_Profile.html",user=current_user)
 
 @app.route('/pprofile')
 @login_required
 def pprofile():
     return render_template("P_Profile.html",email=current_user.p_email)
-
 
 @app.route('/admin',methods=["GET","POST"])
 @login_required
@@ -224,4 +236,49 @@ def admin_approve_professional(s,i):
                 return redirect(url_for('admin'))
         except:
             return redirect(url_for('admin'))
+
+#User Profile
+@app.route('/user/profile/<int:i>/<string:s>',methods=["GET","POST"])
+@login_required
+def user_profile(i,s):
+    try:
+        if s=="city":
+            print(s)
+            city=request.form["city"].strip()
+            print(city)
+            change_city=User.query.filter_by(u_id=i).first()
+            change_city.u_city=city
+            db.session.commit()
+            return redirect(url_for("uprofile"))
+        elif s=="address":
+            address=request.form["address"]
+            print(address)
+            change_address=User.query.filter_by(u_id=i).first()
+            change_address.u_address=address
+            db.session.commit()
+            return redirect(url_for("uprofile"))
+        elif s=="email_otp":
+            otp=request.form["e_otp"]
+            print(otp)
+            e_verify=User.query.filter_by(u_id=i).first()
+            e_verify.e_verification=True
+            db.session.commit()
+            return redirect(url_for("uprofile"))
+    except:
+        return redirect(url_for("uprofile"))
+
+@socketio.on('email_verification')
+def email_verification(data):
+    email = data['email']
+    print(email)
+    from random import randint
+    otp = randint(1000, 9999)
+    send_code = Message(
+        subject="Email Verification Code",
+        sender="ayushgame2910@gmail.com",
+        recipients=[email],
+    )
+    send_code.body = str(otp)
+    mail.send(send_code)
+    emit('reponse-otp',{'otp':otp})
 app.run()

@@ -3,9 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="static/cities.js"></script>
 </head>
 <body>
-{{email}}
+<p>Name : {{user.u_f_name}} {{user.u_l_name}}</p>
+<p>Email : {{user.u_email}} {% if user.e_verification == False %}<button onclick="verify_email()">Verify</button>{% else %}<span style="display:inline;color:green">Verified</span>{% endif %}</p>
+<div id="verify-email" style="display:none;">
+    <button onclick="email_otp('{{user.u_email}}')">Send Otp</button>
+    <form action="user/profile/{{user.u_id}}/{{'email_otp'}}" method="POST" id="email-otp-form" style="display:none;" onsubmit="return verify_otp()">
+        <input type="text" name="e_otp" id="e_otp">
+        <input type="submit" value="Submit">
+    </form>
+</div>
+
+<p>City : {{user.u_city}} <button onclick="city()">Edit</button></p>
+<div id="city" style="display:None;">
+    <form action="user/profile/{{user.u_id}}/{{'city'}}" method="POST" onsubmit="return validateCity()" id="verify_otp">
+    <select onchange="print_city('state', this.selectedIndex);" id="sts" name ="stt" class="form-control" required></select>
+<select id ="state" name="city" class="form-control" required></select>
+<script language="javascript">print_state("sts");</script>
+        <input type="submit" value="Submit">
+        </form>
+</div>
+<p>Address : {{user.u_address}} <button onclick="address()">Edit</button></p>
+<div id="address" style="display:None;">
+    <form action="user/profile/{{user.u_id}}/{{'address'}}" method="POST">
+        <input type="text" name="address" value="" id="otp">
+        <input type="submit" value="Submit">
+    </form>
+</div>
+<p>Phone no : {{user.u_phoneno}}</p>
+<p>Email Verified : {{user.e_verification}}</p>
+<p>Phone No Verified : {{user.p_verification}}</p>
+
 <a href="/ulogout">Logout</a>
+<script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
+<script>
+    var i="";
+    function verify_email(){
+        const s=document.getElementById("verify-email").style.display="block";
+
+    }
+    function email_otp(email){
+        document.getElementById("email-otp-form").style.display="block";
+    console.log(email)
+        const socket=io();
+        socket.emit('email_verification',{
+            email: email
+        });
+        socket.on('reponse-otp',(data)=>{
+        console.log(data.otp);
+        i=data.otp;
+        });
+    }
+    function validateCity() {
+      const state = document.getElementById("sts").value;
+      console.log(state)
+
+      const city = document.getElementById("state").value;
+      console.log(city)
+      if (state === "" || city === "") {
+        alert("Please select both state and city.");
+        return false;
+      }
+      return true; // Allows form submission
+    }
+    function address(){
+        document.getElementById("address").style.display="block";
+    }
+    function city(){
+        document.getElementById("city").style.display="block";
+    }
+    function verify_otp(){
+        console.log(typeof i);
+        const otp=document.getElementById("e_otp").value;
+        console.log(typeof otp)
+        if(toString(i)==toString(otp)){
+            console.log("Verified");
+            return true;
+        }
+        alert("Incorrect Otp");
+        return false;
+    }
+</script>
 </body>
+
 </html>

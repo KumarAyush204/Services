@@ -17,6 +17,7 @@ class User(UserMixin,db.Model):
     isBlock = db.Column(db.Boolean, default=False)
     e_verification = db.Column(db.Boolean, default=False)
     p_verification = db.Column(db.Boolean, default=False)
+    # otp=db.Column(db.Integer)
 
     def get_id(self):
         return f"user-{self.u_id}"
