@@ -32,9 +32,37 @@
         <input type="submit" value="Submit">
     </form>
 </div>
-<p>Phone no : {{user.u_phoneno}}</p>
-<p>Email Verified : {{user.e_verification}}</p>
-<p>Phone No Verified : {{user.p_verification}}</p>
+<p>Phone no : {{user.u_phoneno}} <button onclick="phoneno()">Edit</button></p>
+<div id="change_phoneno" style="display:None;">
+    <form action="user/profile/{{user.u_id}}/{{'change_phoneno'}}" method="POST">
+        Phone No : <input type="number" name="phoneno" size="10">
+        <input type="submit" value="Submit">
+
+    </form>
+    <button onclick="close_change_phoneno()">Cancel</button>
+
+</div>
+{% if user.u_img_profile %}
+<div>
+    <img src="{{ url_for('static', filename='uploads/' + user.u_img_profile.split('/')[-1]) }}" width="150px" height="150px"><br>
+    <button onclick="change_img()">Change Profile Picture</button>
+</div>
+{% else %}
+<p>Upload Profile Picture</p>
+<form action="user/profile/{{user.u_id}}/{{'user_image'}}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <button type="submit">Upload</button>
+    </form>
+{% endif %}
+
+<div id="reupload_img" style="display:None;">
+    <form action="user/profile/{{user.u_id}}/{{'user_image'}}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <button onclick="close_change_img()">Cancel</button>
+</div>
 
 <a href="/ulogout">Logout</a>
 <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
@@ -84,6 +112,18 @@
         }
         alert("Incorrect Otp");
         return false;
+    }
+    function change_img(){
+        document.getElementById("reupload_img").style.display="block";
+    }
+    function close_change_img(){
+        document.getElementById("reupload_img").style.display="none";
+    }
+    function phoneno(){
+        document.getElementById("change_phoneno").style.display="block";
+    }
+    function close_change_phoneno(){
+        document.getElementById("change_phoneno").style.display="none";
     }
 </script>
 </body>

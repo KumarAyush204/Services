@@ -3,10 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="cities.js"></script>
+    <script src="static/cities.js"></script>
 </head>
 <body>
-{{email}}
-<a href="/plogout">Logout</a>
+<p>Name : {{professional.p_f_name}} {{professional.p_l_name}}</p>
+<p>Email : {{professional.p_email}} {% if professional.e_verification == False %}<button onclick="verify_email()">Verify</button>{% else %}<span style="display:inline;color:green">Verified</span>{% endif %}</p>
+<div id="verify-email" style="display:none;">
+    <button onclick="email_otp('{{professional.p_email}}')">Send Otp</button>
+    <form action="professional/profile/{{professional.p_id}}/{{'email_otp'}}" method="POST" id="email-otp-form" style="display:none;" onsubmit="return verify_otp()">
+        <input type="text" name="e_otp" id="e_otp">
+        <input type="submit" value="Submit">
+    </form>
+</div>
+
+<p>City : {{professional.p_city}} <button onclick="city()">Edit</button></p>
+<div id="city" style="display:None;">
+    <form action="professional/profile/{{professional.p_id}}/{{'city'}}" method="POST" onsubmit="return validateCity()" id="verify_otp">
+    <select onchange="print_city('state', this.selectedIndex);" id="sts" name ="stt" class="form-control" required></select>
+<select id ="state" name="city" class="form-control" required></select>
+<script language="javascript">print_state("sts");</script>
+        <input type="submit" value="Submit">
+        </form>
+</div>
+<p>Address : {{professional.p_address}} <button onclick="address()">Edit</button></p>
+<div id="address" style="display:None;">
+    <form action="professional/profile/{{professional.p_id}}/{{'address'}}" method="POST">
+        <input type="text" name="address" value="" id="otp">
+        <input type="submit" value="Submit">
+    </form>
+</div>
+<p>Phone no : {{professional.p_phoneno}} <button onclick="phoneno()">Edit</button></p>
+<div id="change_phoneno" style="display:None;">
+    <form action="professional/profile/{{professional.p_id}}/{{'change_phoneno'}}" method="POST">
+        Phone No : <input type="number" name="phoneno" size="10">
+        <input type="submit" value="Submit">
+
+    </form>
+    <button onclick="close_change_phoneno()">Cancel</button>
+
+</div>
+{% if professional.p_img_profile %}
+<div>
+    <img src="{{ url_for('static', filename='uploads/' + professional.p_img_profile.split('/')[-1]) }}" width="150px" height="150px"><br>
+    <button onclick="change_img()">Change Profile Picture</button>
+</div>
+{% else %}
+<p>Upload Profile Picture</p>
+<form action="professional/profile/{{professional.p_id}}/{{'user_image'}}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <button type="submit">Upload</button>
+    </form>
+{% endif %}
+
+<div id="reupload_img" style="display:None;">
+    <form action="professional/profile/{{professional.p_id}}/{{'user_image'}}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <button onclick="close_change_img()">Cancel</button>
+</div>
+
+<a href="/ulogout">Logout</a>
+<script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
+<script>
+    var i="";
+    function verify_email(){
+        const s=document.getElementById("verify-email").style.display="block";
+
+    }
+    function email_otp(email){
+        document.getElementById("email-otp-form").style.display="block";
+    console.log(email)
+        const socket=io();
+        socket.emit('email_verification',{
+            email: email
+        });
+        socket.on('reponse-otp',(data)=>{
+        console.log(data.otp);
+        i=data.otp;
+        });
+    }
+    function validateCity() {
+      const state = document.getElementById("sts").value;
+      console.log(state)
+
+      const city = document.getElementById("state").value;
+      console.log(city)
+      if (state === "" || city === "") {
+        alert("Please select both state and city.");
+        return false;
+      }
+      return true; // Allows form submission
+    }
+    function address(){
+        document.getElementById("address").style.display="block";
+    }
+    function city(){
+        document.getElementById("city").style.display="block";
+    }
+    function verify_otp(){
+        console.log(typeof i);
+        const otp=document.getElementById("e_otp").value;
+        console.log(typeof otp)
+        if(toString(i)==toString(otp)){
+            console.log("Verified");
+            return true;
+        }
+        alert("Incorrect Otp");
+        return false;
+    }
+    function change_img(){
+        document.getElementById("reupload_img").style.display="block";
+    }
+    function close_change_img(){
+        document.getElementById("reupload_img").style.display="none";
+    }
+    function phoneno(){
+        document.getElementById("change_phoneno").style.display="block";
+    }
+    function close_change_phoneno(){
+        document.getElementById("change_phoneno").style.display="none";
+    }
+</script>
 </body>
+
 </html>

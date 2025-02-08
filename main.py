@@ -3,6 +3,7 @@ from models import db,User,Professional,Admin
 from flask_login import LoginManager,login_user,login_required,current_user,logout_user
 from flask_mail import Mail,Message
 from flask_socketio import SocketIO,emit
+from werkzeug.utils import secure_filename
 
 app=Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///app.db"
@@ -24,6 +25,15 @@ app.config["MAIL_PASSWORD"]="xfgb tsef ytli mrih"
 mail=Mail(app)
 
 socketio=SocketIO(app)
+
+UPLOAD_FOLDER='static/uploads'
+app.config['UPLOAD_FOLDER']=UPLOAD_FOLDER
+ALLOWED_EXTENSIONS={'png','jpeg','jpg'}
+
+# Function to check file extensions
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -169,7 +179,7 @@ def uprofile():
 @app.route('/pprofile')
 @login_required
 def pprofile():
-    return render_template("P_Profile.html",email=current_user.p_email)
+    return render_template("P_Profile.html",professional=current_user)
 
 @app.route('/admin',methods=["GET","POST"])
 @login_required
@@ -264,8 +274,96 @@ def user_profile(i,s):
             e_verify.e_verification=True
             db.session.commit()
             return redirect(url_for("uprofile"))
+        elif s=='user_image':
+            if 'file' not in request.files:
+                return 'No file part'
+
+            file = request.files['file']
+
+            if file.filename == '':
+                return 'No selected file'
+            import os
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file_path=file_path.replace('\\','/')
+                file.save(file_path)
+
+                # Save the file path to the database
+                new_image = User.query.filter_by(u_id=i).first()
+                new_image.u_img_profile=file_path
+                db.session.commit()
+
+                return redirect(url_for('uprofile'))
+
+            return 'Invalid file type'
+        elif s=='change_phoneno':
+            phoneno = request.form["phoneno"]
+            u_phoneno = User.query.filter_by(u_id=i).first()
+            u_phoneno.u_phoneno = phoneno
+            db.session.commit()
+            return redirect(url_for("uprofile"))
     except:
         return redirect(url_for("uprofile"))
+
+#Professional Profile
+@app.route('/professional/profile/<int:i>/<string:s>',methods=["GET","POST"])
+@login_required
+def professional_profile(i,s):
+    try:
+        if s=="city":
+            print(s)
+            city=request.form["city"].strip()
+            print(city)
+            change_city=Professional.query.filter_by(p_id=i).first()
+            change_city.p_city=city
+            db.session.commit()
+            return redirect(url_for("pprofile"))
+        elif s=="address":
+            address=request.form["address"]
+            print(address)
+            change_address=Professional.query.filter_by(p_id=i).first()
+            change_address.p_address=address
+            db.session.commit()
+            return redirect(url_for("pprofile"))
+        elif s=="email_otp":
+            otp=request.form["e_otp"]
+            print(otp)
+            e_verify=Professional.query.filter_by(p_id=i).first()
+            e_verify.e_verification=True
+            db.session.commit()
+            return redirect(url_for("pprofile"))
+        elif s=='user_image':
+            if 'file' not in request.files:
+                return 'No file part'
+
+            file = request.files['file']
+
+            if file.filename == '':
+                return 'No selected file'
+            import os
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file_path=file_path.replace('\\','/')
+                file.save(file_path)
+
+                # Save the file path to the database
+                new_image = Professional.query.filter_by(p_id=i).first()
+                new_image.p_img_profile=file_path
+                db.session.commit()
+
+                return redirect(url_for('pprofile'))
+
+            return 'Invalid file type'
+        elif s=='change_phoneno':
+            phoneno = request.form["phoneno"]
+            p_phoneno = Professional.query.filter_by(p_id=i).first()
+            p_phoneno.p_phoneno = phoneno
+            db.session.commit()
+            return redirect(url_for("pprofile"))
+    except:
+        return redirect(url_for("pprofile"))
 
 @socketio.on('email_verification')
 def email_verification(data):
