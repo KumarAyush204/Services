@@ -38,7 +38,7 @@ class Professional(UserMixin,db.Model):
     isApproved=db.Column(db.Boolean,default=False)
     e_verification = db.Column(db.Boolean, default=False)
     p_verification = db.Column(db.Boolean, default=False)
-
+    s_id = db.Column(db.Integer, db.ForeignKey("service.s_id"))
     def get_id(self):
         return f"prof-{self.p_id}"
 
@@ -50,3 +50,23 @@ class Admin(UserMixin,db.Model):
 
     def get_id(self):
         return f"admin-{self.a_id}"
+
+class Service(UserMixin,db.Model):
+    __tablename__="service"
+    s_id=db.Column(db.Integer,autoincrement=True,primary_key=True)
+    s_name=db.Column(db.String,nullable=False)
+
+class Service_Status(UserMixin,db.Model):
+    __tablename__="service_status"
+    ss_id=db.Column(db.Integer,autoincrement=True,primary_key=True)
+    ss_name=db.Column(db.String,nullable=False)
+
+class Service_Request(UserMixin,db.Model):
+    __tablename__ = "service_request"
+    sr_id=db.Column(db.Integer,autoincrement=True,primary_key=True)
+    u_id=db.Column(db.Integer,db.ForeignKey("user.u_id"))
+    p_id=db.Column(db.Integer,db.ForeignKey("professional.p_id"))
+    s_id=db.Column(db.Integer,db.ForeignKey("service.s_id"))
+    ss_id=db.Column(db.Integer,db.ForeignKey("service_status.ss_id"))
+    time_created=db.Column(db.DateTime,default=db.func.current_timestamp())
+    time_finished=db.Column(db.DateTime,nullable=True)
