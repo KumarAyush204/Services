@@ -13,6 +13,7 @@
 {% for i in professionals %}
 <p><b>Name:</b> {{i.p_f_name}} {{i.p_l_name}}&nbsp;<b>Phone no. :</b> {{i.p_phoneno}}&nbsp;<b>Registered On :</b> {{i.p_date_registred}}&nbsp;<b>Blocked :</b> {{i.isBlock}}&nbsp;<b>Approved :</b> {{i.isApproved}}&nbsp;<b>Email Verified :</b> {{i.e_verification}}&nbsp;<b>Phoneno Verified :</b> {{i.p_verification}}&nbsp;<a href="admin/block/{{'professional'}}/{{i.p_id}}">Block/Unblock Professional</a>&nbsp;<a href="admin/approve/{{'professional'}}/{{i.p_id}}">Approve/Reject Professional</a></p>
 {% endfor %}
-
+<a href="/admin/service/{{'s'}}/0">Add Service</a>
+<a href="/alogout">Logout</a>
 </body>
 </html>

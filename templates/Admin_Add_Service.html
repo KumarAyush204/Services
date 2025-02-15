@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="services" style="display:block;">
+    {% for s in services %}
+<p>{{s.s_name}} <button onclick="edit_service({{s.s_id}})">Edit</button><button onclick="delete_service('d{{s.s_id}}')">Delete</button> </p>
+    <div class="{{s.s_id}}" style="display:none;">
+        <form action="/admin/service/{{'e_s'}}/{{s.s_id}}" method="POST">
+        Edit Service Name : <input type="text" name="edit_service" value="{{s.s_name}}">
+        <input type="submit" value="Submit"><button onclick="cancel_edit({{s.s_id}})">Cancel</button>
+    </form>
+    </div>
+    <div class="d{{s.s_id}}" style="display:none;">
+        <form action="/admin/service/{{'d_s'}}/{{s.s_id}}" method="POST">
+            <input type="submit" value="Yes">
+        </form>
+        <button onclick="cancel_delete('d{{s.s_id}}')">Cancel</button>
+    </div>
+{% endfor %}
+<button onclick="add_service()">Add Service</button>
+</div>
+<div id="add-service" style="display:none;">
+    <form action="/admin/service/{{'a_s'}}/0" method="POST">
+        Service Name : <input type="text" name="service_name">
+        <input type="submit" value="Submit">
+    </form>
+    <button onclick="cancel_service()">Canel</button>
+</div>
+
+</body>
+<script>
+    function add_service(){
+        document.getElementById("services").style.display="none";
+        document.getElementById("add-service").style.display="block";
+    }
+    function cancel_service(){
+        document.getElementById("services").style.display="block";
+        document.getElementById("add-service").style.display="none";
+    }
+    function edit_service(service){
+        document.getElementsByClassName(service)[0].style.display="block";
+    }
+    function cancel_edit(service){
+        document.getElementsByClassName(service)[0].style.display="none";
+    }
+    function delete_service(d_service){
+        document.getElementsByClassName(d_service)[0].style.display="block";
+    }
+    function cancel_delete(d_service){
+        document.getElementsByClassName(d_service)[0].style.display="none";
+    }
+</script>
+</html>

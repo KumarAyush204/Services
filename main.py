@@ -1,5 +1,5 @@
-from flask import Flask,render_template,request,redirect,url_for,flash
-from models import db,User,Professional,Admin
+from flask import Flask,render_template,request,redirect,url_for,flash,session
+from models import db,User,Professional,Admin,Service,Service_Request,Service_Status
 from flask_login import LoginManager,login_user,login_required,current_user,logout_user
 from flask_mail import Mail,Message
 from flask_socketio import SocketIO,emit
@@ -53,6 +53,7 @@ def load_user(user_id):
 @app.route("/ulogout")
 @login_required
 def u_logout():
+    session.clear()
     logout_user()
     flash("Logged out!")
     return redirect(url_for("user_login"))
@@ -60,9 +61,19 @@ def u_logout():
 @app.route("/plogout")
 @login_required
 def p_logout():
+    session.clear()
     logout_user()
     flash("Logged out!")
     return redirect(url_for("professional_login"))
+
+@app.route("/alogout")
+@login_required
+def a_logout():
+    session.clear()
+    logout_user()
+    flash("Logged out!")
+    return redirect(url_for("admin_login"))
+
 # with app.app_context():
 #     db.create_all()
 
@@ -247,6 +258,35 @@ def admin_approve_professional(s,i):
         except:
             return redirect(url_for('admin'))
 
+@app.route('/admin/service/<string:s>/<int:i>',methods=["GET","POST"])
+@login_required
+def admin_add_service(s,i):
+    try:
+        if request.method=="GET":
+            services=Service.query.all()
+            return render_template("Admin_Add_Service.html",services=services)
+        elif request.method=="POST":
+            if s=="a_s":
+                service_name = request.form["service_name"]
+                service=Service(s_name=service_name)
+                db.session.add(service)
+                db.session.commit()
+                return redirect(url_for(admin))
+            elif s=="e_s":
+                edited_service_name = request.form["edit_service"]
+                service = Service.query.filter_by(s_id=i).first()
+                service.s_name=edited_service_name
+                db.session.commit()
+                print("Deleted")
+                return redirect(url_for(admin))
+            elif s=="d_s":
+                service = Service.query.filter_by(s_id=i).first()
+                db.session.delete(service)
+                db.session.commit()
+                return redirect(url_for(admin))
+    except:
+        return redirect(url_for('admin_add_service',s='s',i=0))
+
 #User Profile
 @app.route('/user/profile/<int:i>/<string:s>',methods=["GET","POST"])
 @login_required
@@ -379,4 +419,12 @@ def email_verification(data):
     send_code.body = str(otp)
     mail.send(send_code)
     emit('reponse-otp',{'otp':otp})
+
+@app.after_request
+def add_header(response):
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
+
 app.run()
