@@ -185,7 +185,9 @@ def professional_register():
 @app.route('/uprofile')
 @login_required
 def uprofile():
-    return render_template("U_Profile.html",user=current_user)
+    professionals=Professional.query.all()
+    services=Service.query.all()
+    return render_template("U_Profile.html",user=current_user,professionals=professionals,services=services)
 
 @app.route('/pprofile')
 @login_required

@@ -39,6 +39,7 @@ class Professional(UserMixin,db.Model):
     e_verification = db.Column(db.Boolean, default=False)
     p_verification = db.Column(db.Boolean, default=False)
     s_id = db.Column(db.Integer, db.ForeignKey("service.s_id"))
+
     def get_id(self):
         return f"prof-{self.p_id}"
 
