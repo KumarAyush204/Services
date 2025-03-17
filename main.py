@@ -192,7 +192,8 @@ def uprofile():
 @app.route('/pprofile')
 @login_required
 def pprofile():
-    return render_template("P_Profile.html",professional=current_user)
+    services=Service.query.all()
+    return render_template("P_Profile.html",professional=current_user,services=services)
 
 @app.route('/admin',methods=["GET","POST"])
 @login_required

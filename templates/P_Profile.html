@@ -6,6 +6,11 @@
     <script src="static/cities.js"></script>
 </head>
 <body>
+<button onclick="open_profile()">Profile</button>
+<button onclick="close_profile()" style="display:none;" id="close_profile_btn">Close Profile</button>
+<button onclick="open_services()">Services</button>
+<button onclick="close_services()" style="display:none;" id="close_service_btn">Close Services</button>
+<div id="profile" style="display:none;">
 <p>Name : {{professional.p_f_name}} {{professional.p_l_name}}</p>
 <p>Email : {{professional.p_email}} {% if professional.e_verification == False %}<button onclick="verify_email()">Verify</button>{% else %}<span style="display:inline;color:green">Verified</span>{% endif %}</p>
 <div id="verify-email" style="display:none;">
@@ -63,8 +68,13 @@
 
     <button onclick="close_change_img()">Cancel</button>
 </div>
-
-<a href="/ulogout">Logout</a>
+</div>
+<div id="services" style="display:none;">
+{% for s in services%}
+    {{s.s_name}}<button>Select</button><br>
+    {% endfor %}
+</div>
+<a href="/plogout">Logout</a>
 <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
 <script>
     var i="";
@@ -124,6 +134,22 @@
     }
     function close_change_phoneno(){
         document.getElementById("change_phoneno").style.display="none";
+    }
+    function open_profile(){
+        document.getElementById("profile").style.display="block";
+        document.getElementById("close_profile_btn").style.display="block";
+    }
+    function close_profile(){
+        document.getElementById("profile").style.display="none";
+        document.getElementById("close_profile_btn").style.display="none";
+    }
+    function open_services(){
+        document.getElementById("services").style.display="block";
+        document.getElementById("close_service_btn").style.display="block";
+    }
+    function close_services(){
+        document.getElementById("services").style.display="none";
+        document.getElementById("close_service_btn").style.display="none";
     }
 </script>
 </body>
