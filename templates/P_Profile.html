@@ -8,7 +8,8 @@
 <body>
 <button onclick="open_profile()" id="open_profile_btn">Profile</button>
 <button onclick="close_profile()" style="display:none;" id="close_profile_btn">Close Profile</button>
-
+<button onclick="open_sreq()" id="open_sreq_btn">Service Requests</button>
+<button onclick="close_sreq()" style="display:none;" id="close_sreq_btn">Close Service Requests</button>
 <div id="profile" style="display:none;">
 <p>Name : {{professional.p_f_name}} {{professional.p_l_name}}</p>
 <p>Email : {{professional.p_email}} {% if professional.e_verification == False %}<button onclick="verify_email()">Verify</button>{% else %}<span style="display:inline;color:green">Verified</span>{% endif %}</p>
@@ -80,7 +81,13 @@
 </form>
 
 </div>
+
 </div>
+<div id="sreq" style="display:none;">
+        {% for sr in service_reqs %}
+        {{sr.sr_id}}
+        {% endfor %}
+    </div>
 
 <a href="/plogout">Logout</a>
 <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
@@ -147,11 +154,13 @@
         document.getElementById("profile").style.display="block";
         document.getElementById("close_profile_btn").style.display="block";
         document.getElementById("open_profile_btn").style.display="none";
+        document.getElementById("open_sreq_btn").style.display="none";
     }
     function close_profile(){
         document.getElementById("profile").style.display="none";
         document.getElementById("close_profile_btn").style.display="none";
         document.getElementById("open_profile_btn").style.display="block";
+        document.getElementById("open_sreq_btn").style.display="block";
     }
     function open_services(){
         document.getElementById("services").style.display="block";
@@ -162,6 +171,18 @@
         document.getElementById("services").style.display="none";
         document.getElementById("close_service_btn").style.display="none";
         document.getElementById("open_service_btn").style.display="block";
+    }
+    function open_sreq(){
+        document.getElementById("sreq").style.display="block";
+        document.getElementById("close_sreq_btn").style.display="block";
+        document.getElementById("open_sreq_btn").style.display="none";
+        document.getElementById("open_profile_btn").style.display="none";
+    }
+    function close_sreq(){
+        document.getElementById("sreq").style.display="none";
+        document.getElementById("close_sreq_btn").style.display="none";
+        document.getElementById("open_sreq_btn").style.display="block";
+        document.getElementById("open_profile_btn").style.display="block";
     }
 </script>
 </body>

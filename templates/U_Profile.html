@@ -86,7 +86,7 @@
     {% for s in services %}
         {% if s.s_id==p.s_id %}
             <p>Service : {{s.s_name}}</p>
-            <p><b><a href="#">Book</a></b></p>
+            <p><b><a href="/uprofile/req_s/{{p.p_id}}/{{user.u_id}}/{{p.s_id}}">Book</a></b></p>
         {% endif %}
     {% endfor %}
     </div>

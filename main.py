@@ -194,7 +194,8 @@ def uprofile():
 def pprofile():
     if request.method=="GET":
         services=Service.query.all()
-        return render_template("P_Profile.html",professional=current_user,services=services)
+        service_reqs=Service_Request.query.all()
+        return render_template("P_Profile.html",professional=current_user,services=services,service_reqs=service_reqs)
     elif request.method=="POST":
         try:
             professional=Professional.query.filter_by(p_id=current_user.p_id).first()
@@ -206,6 +207,16 @@ def pprofile():
         except:
             print("Service exception")
             return redirect(url_for("pprofile"))
+
+@app.route('/uprofile/req_s/<int:p>/<int:u>/<int:s>',methods=["GET","POST"])
+@login_required
+def service_req(p,u,s):
+    if request.method=="GET":
+        sreq=Service_Request(u_id=u,p_id=p,s_id=s)
+        db.session.add(sreq)
+        db.session.commit()
+        return redirect(url_for('uprofile'))
+
 @app.route('/admin',methods=["GET","POST"])
 @login_required
 def admin():
