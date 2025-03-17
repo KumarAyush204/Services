@@ -11,9 +11,9 @@
     </style>
 </head>
 <body>
-<button onclick="open_profile()">Profile</button>
+<button onclick="open_profile()" id="open_profile_btn">Profile</button>
 <button onclick="close_profile()" style="display:none;" id="close_profile_btn">Close Profile</button>
-<button onclick="open_services()">Services</button>
+<button onclick="open_services()" id="open_service_btn">Services</button>
 <button onclick="close_services()" style="display:none;" id="close_service_btn">Close Services</button>
 <div id="profile" style="display:none;">
 <p>Name : {{user.u_f_name}} {{user.u_l_name}}</p>
@@ -157,18 +157,26 @@
     function open_profile(){
         document.getElementById("profile").style.display="block";
         document.getElementById("close_profile_btn").style.display="block";
+        document.getElementById("open_profile_btn").style.display="none";
+        document.getElementById("open_service_btn").style.display="none";
     }
     function close_profile(){
         document.getElementById("profile").style.display="none";
         document.getElementById("close_profile_btn").style.display="none";
+        document.getElementById("open_profile_btn").style.display="block";
+        document.getElementById("open_service_btn").style.display="block";
     }
     function open_services(){
         document.getElementById("professionals").style.display="block";
         document.getElementById("close_service_btn").style.display="block";
+        document.getElementById("open_service_btn").style.display="none";
+        document.getElementById("open_profile_btn").style.display="none";
     }
     function close_services(){
         document.getElementById("professionals").style.display="none";
         document.getElementById("close_service_btn").style.display="none";
+        document.getElementById("open_service_btn").style.display="block";
+        document.getElementById("open_profile_btn").style.display="block";
     }
 </script>
 <a href="/ulogout">Logout</a>

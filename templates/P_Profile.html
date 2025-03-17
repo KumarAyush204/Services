@@ -6,10 +6,9 @@
     <script src="static/cities.js"></script>
 </head>
 <body>
-<button onclick="open_profile()">Profile</button>
+<button onclick="open_profile()" id="open_profile_btn">Profile</button>
 <button onclick="close_profile()" style="display:none;" id="close_profile_btn">Close Profile</button>
-<button onclick="open_services()">Services</button>
-<button onclick="close_services()" style="display:none;" id="close_service_btn">Close Services</button>
+
 <div id="profile" style="display:none;">
 <p>Name : {{professional.p_f_name}} {{professional.p_l_name}}</p>
 <p>Email : {{professional.p_email}} {% if professional.e_verification == False %}<button onclick="verify_email()">Verify</button>{% else %}<span style="display:inline;color:green">Verified</span>{% endif %}</p>
@@ -68,12 +67,21 @@
 
     <button onclick="close_change_img()">Cancel</button>
 </div>
-</div>
-<div id="services" style="display:none;">
-{% for s in services%}
-    {{s.s_name}}<button>Select</button><br>
+    <p>Current Service Selected : {% for s in services %}{% if s.s_id==professional.s_id %}{{s.s_name}}{% endif %}{% endfor %}</p>
+    <button onclick="open_services()" id="open_service_btn">Services</button>
+<button onclick="close_services()" style="display:none;" id="close_service_btn">Close Services</button>
+    <div id="services" style="display:none;">
+        <form method="POST" action="/pprofile">
+    <label>Select your option:</label><br>
+    {% for s in services%}
+            <input type="radio" name="choice" value="{{s.s_id}}">{{s.s_name}}<br>
     {% endfor %}
+    <button type="submit">Submit</button>
+</form>
+
 </div>
+</div>
+
 <a href="/plogout">Logout</a>
 <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
 <script>
@@ -138,18 +146,22 @@
     function open_profile(){
         document.getElementById("profile").style.display="block";
         document.getElementById("close_profile_btn").style.display="block";
+        document.getElementById("open_profile_btn").style.display="none";
     }
     function close_profile(){
         document.getElementById("profile").style.display="none";
         document.getElementById("close_profile_btn").style.display="none";
+        document.getElementById("open_profile_btn").style.display="block";
     }
     function open_services(){
         document.getElementById("services").style.display="block";
         document.getElementById("close_service_btn").style.display="block";
+        document.getElementById("open_service_btn").style.display="none";
     }
     function close_services(){
         document.getElementById("services").style.display="none";
         document.getElementById("close_service_btn").style.display="none";
+        document.getElementById("open_service_btn").style.display="block";
     }
 </script>
 </body>
