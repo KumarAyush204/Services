@@ -220,15 +220,25 @@ def pprofile_func(s,sr):
             service_rq.ss_id=1
             db.session.commit()
 
-        if s=="reject":
+        elif s=="reject":
             service_rq = Service_Request.query.filter_by(sr_id=sr).first()
             service_rq.ss_id = 2
             db.session.commit()
             print("came to reject")
-
+        elif s=="completion":
+            service_rq = Service_Request.query.filter_by(sr_id=sr).first()
+            service_rq.ss_id = 5
+            db.session.commit()
+            print("came to reject")
+        elif s=="cancel":
+            service_rq = Service_Request.query.filter_by(sr_id=sr).first()
+            service_rq.ss_id = 4
+            db.session.commit()
+            print("came to reject")
         return redirect(url_for('pprofile'))
     except:
         return redirect(url_for('pprofile'))
+
 @app.route('/uprofile/req_s/<int:p>/<int:u>/<int:s>',methods=["GET","POST"])
 @login_required
 def service_req(p,u,s):
