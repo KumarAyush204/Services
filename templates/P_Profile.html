@@ -85,7 +85,23 @@
 </div>
 <div id="sreq" style="display:none;">
         {% for sr in service_reqs %}
-        {{sr.sr_id}}
+    {% if sr.p_id==professional.p_id %}
+    {% for u in users %}
+    {% if sr.u_id==u.u_id %}
+    {% for st in service_stat %}
+    {% if sr.ss_id==st.ss_id %}
+    <div style="border:solid">
+        <span>{{sr.u_id}} {{u.u_f_name}} {{u.u_l_name}}</span> <span style="color:orange">{{st.ss_name}}</span><br>
+        {% if sr.ss_id!=2 %}
+        <a href="/pprofile/{{"accept"}}/{{sr.sr_id}}">Accept</a> <a href="/pprofile/{{"reject"}}/{{sr.sr_id}}">Reject</a>
+        {% endif %}
+    </div>
+    <br>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    {% endfor %}
+    {% endif %}
         {% endfor %}
     </div>
 

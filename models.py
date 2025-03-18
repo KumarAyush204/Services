@@ -68,6 +68,6 @@ class Service_Request(UserMixin,db.Model):
     u_id=db.Column(db.Integer,db.ForeignKey("user.u_id"))
     p_id=db.Column(db.Integer,db.ForeignKey("professional.p_id"))
     s_id=db.Column(db.Integer,db.ForeignKey("service.s_id"))
-    ss_id=db.Column(db.Integer,db.ForeignKey("service_status.ss_id"),default=1)
+    ss_id=db.Column(db.Integer,db.ForeignKey("service_status.ss_id"),default=0)
     time_created=db.Column(db.DateTime,default=db.func.current_timestamp())
     time_finished=db.Column(db.DateTime,nullable=True)

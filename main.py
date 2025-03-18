@@ -193,9 +193,11 @@ def uprofile():
 @login_required
 def pprofile():
     if request.method=="GET":
+        users=User.query.all()
         services=Service.query.all()
         service_reqs=Service_Request.query.all()
-        return render_template("P_Profile.html",professional=current_user,services=services,service_reqs=service_reqs)
+        service_stat=Service_Status.query.all()
+        return render_template("P_Profile.html",professional=current_user,services=services,service_reqs=service_reqs,users=users,service_stat=service_stat)
     elif request.method=="POST":
         try:
             professional=Professional.query.filter_by(p_id=current_user.p_id).first()
@@ -208,6 +210,25 @@ def pprofile():
             print("Service exception")
             return redirect(url_for("pprofile"))
 
+@app.route('/pprofile/<string:s>/<int:sr>',methods=["GET","POST"])
+@login_required
+def pprofile_func(s,sr):
+    try:
+        if s=="accept":
+            print("came to accept")
+            service_rq=Service_Request.query.filter_by(sr_id=sr).first()
+            service_rq.ss_id=1
+            db.session.commit()
+
+        if s=="reject":
+            service_rq = Service_Request.query.filter_by(sr_id=sr).first()
+            service_rq.ss_id = 2
+            db.session.commit()
+            print("came to reject")
+
+        return redirect(url_for('pprofile'))
+    except:
+        return redirect(url_for('pprofile'))
 @app.route('/uprofile/req_s/<int:p>/<int:u>/<int:s>',methods=["GET","POST"])
 @login_required
 def service_req(p,u,s):
