@@ -74,8 +74,8 @@ def a_logout():
     flash("Logged out!")
     return redirect(url_for("admin_login"))
 
-# with app.app_context():
-#     db.create_all()
+with app.app_context():
+    db.create_all()
 
 @app.route('/')
 def index():
@@ -187,7 +187,22 @@ def professional_register():
 def uprofile():
     professionals=Professional.query.all()
     services=Service.query.all()
-    return render_template("U_Profile.html",user=current_user,professionals=professionals,services=services)
+    service_reqs = Service_Request.query.all()
+    service_stat = Service_Status.query.all()
+    return render_template("U_Profile.html",user=current_user,professionals=professionals,services=services,service_reqs=service_reqs,service_stat=service_stat)
+
+@app.route('/uprofile/<string:s>/<int:sr>',methods=["GET","POST"])
+@login_required
+def uprofile_func(s,sr):
+    try:
+        if s == "Completed":
+            service_rq = Service_Request.query.filter_by(sr_id=sr).first()
+            service_rq.ss_id = 3
+            db.session.commit()
+            return redirect(url_for('uprofile'))
+    except:
+        return redirect(url_for('uprofile'))
+
 
 @app.route('/pprofile',methods=["GET","POST"])
 @login_required
@@ -202,8 +217,10 @@ def pprofile():
         try:
             professional=Professional.query.filter_by(p_id=current_user.p_id).first()
             service_id=request.form["choice"]
+            price=request.form["price"]
             print(service_id)
             professional.s_id=service_id
+            professional.price=price
             db.session.commit()
             return redirect(url_for('pprofile'))
         except:
@@ -235,15 +252,18 @@ def pprofile_func(s,sr):
             service_rq.ss_id = 4
             db.session.commit()
             print("came to reject")
-        return redirect(url_for('pprofile'))
     except:
         return redirect(url_for('pprofile'))
 
 @app.route('/uprofile/req_s/<int:p>/<int:u>/<int:s>',methods=["GET","POST"])
 @login_required
 def service_req(p,u,s):
-    if request.method=="GET":
-        sreq=Service_Request(u_id=u,p_id=p,s_id=s)
+    if request.method=="POST":
+
+        date = request.form["date"]
+        time = request.form["time"]
+        description="Booking Date : "+date+"Booking Time"+time
+        sreq = Service_Request(u_id=u, p_id=p, s_id=s,description=description)
         db.session.add(sreq)
         db.session.commit()
         return redirect(url_for('uprofile'))

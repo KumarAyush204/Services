@@ -70,7 +70,7 @@
 
     <button onclick="close_change_img()">Cancel</button>
 </div>
-    <p>Current Service Selected : {% for s in services %}{% if s.s_id==professional.s_id %}{{s.s_name}}{% endif %}{% endfor %}</p>
+    <p>Current Service Selected : {% for s in services %}{% if s.s_id==professional.s_id %}{{s.s_name}}  {{professional.price}}{% endif %}{% endfor %}</p>
     <button onclick="open_services()" id="open_service_btn">Services</button>
 <button onclick="close_services()" style="display:none;" id="close_service_btn">Close Services</button>
     <div id="services" style="display:none;">
@@ -79,6 +79,7 @@
     {% for s in services%}
             <input type="radio" name="choice" value="{{s.s_id}}">{{s.s_name}}<br>
     {% endfor %}
+            Price : <input type="number" name="price">
     <button type="submit">Submit</button>
 </form>
 
@@ -94,7 +95,7 @@
     {% for st in service_stat %}
     {% if sr.ss_id==st.ss_id %}
     <div style="border:solid">
-        <span>{{sr.u_id}} {{u.u_f_name}} {{u.u_l_name}}</span> <span style="color:orange">{{st.ss_name}}</span><br>
+        <span>{{sr.u_id}} {{u.u_f_name}} {{u.u_l_name}}</span> <span>{{sr.description}}</span> <span style="color:orange">{{st.ss_name}}</span><br>
         {% if sr.ss_id!=2 %}
         <a href="/pprofile/{{"accept"}}/{{sr.sr_id}}">Accept</a> <a href="/pprofile/{{"reject"}}/{{sr.sr_id}}">Reject</a>
 
@@ -127,6 +128,8 @@
             <span style="color:red">{{st.ss_name}}</span><br>
         {% elif sr.ss_id==4 %}
             <span style="color:red">{{st.ss_name}}</span><br>
+        {% elif sr.ss_id==3 %}
+            <span style="color:green">{{st.ss_name}}</span><br>
         {% elif sr.ss_id==5 %}
             <span style="color:orange">{{st.ss_name}}</span><br>
         {% endif %}

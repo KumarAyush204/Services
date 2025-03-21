@@ -39,7 +39,7 @@ class Professional(UserMixin,db.Model):
     e_verification = db.Column(db.Boolean, default=False)
     p_verification = db.Column(db.Boolean, default=False)
     s_id = db.Column(db.Integer, db.ForeignKey("service.s_id"))
-
+    price = db.Column(db.Integer, nullable=True)
     def get_id(self):
         return f"prof-{self.p_id}"
 
@@ -71,3 +71,4 @@ class Service_Request(UserMixin,db.Model):
     ss_id=db.Column(db.Integer,db.ForeignKey("service_status.ss_id"),default=0)
     time_created=db.Column(db.DateTime,default=db.func.current_timestamp())
     time_finished=db.Column(db.DateTime,nullable=True)
+    description=db.Column(db.String,nullable=False)
