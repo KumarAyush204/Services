@@ -74,8 +74,8 @@ def a_logout():
     flash("Logged out!")
     return redirect(url_for("admin_login"))
 
-with app.app_context():
-    db.create_all()
+# with app.app_context():
+#     db.create_all()
 
 @app.route('/')
 def index():
@@ -199,7 +199,11 @@ def uprofile_func(s,sr):
             service_rq = Service_Request.query.filter_by(sr_id=sr).first()
             service_rq.ss_id = 3
             db.session.commit()
-            return redirect(url_for('uprofile'))
+        elif s=="cancel_bk":
+            service_rq = Service_Request.query.filter_by(sr_id=sr).first()
+            service_rq.ss_id = 6
+            db.session.commit()
+        return redirect(url_for('uprofile'))
     except:
         return redirect(url_for('uprofile'))
 
@@ -252,6 +256,7 @@ def pprofile_func(s,sr):
             service_rq.ss_id = 4
             db.session.commit()
             print("came to reject")
+        return redirect(url_for('pprofile'))
     except:
         return redirect(url_for('pprofile'))
 
@@ -262,7 +267,7 @@ def service_req(p,u,s):
 
         date = request.form["date"]
         time = request.form["time"]
-        description="Booking Date : "+date+"Booking Time"+time
+        description="Booking Date : "+date+"\nBooking Time : "+time
         sreq = Service_Request(u_id=u, p_id=p, s_id=s,description=description)
         db.session.add(sreq)
         db.session.commit()

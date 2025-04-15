@@ -95,7 +95,8 @@
     {% for st in service_stat %}
     {% if sr.ss_id==st.ss_id %}
     <div style="border:solid">
-        <span>{{sr.u_id}} {{u.u_f_name}} {{u.u_l_name}}</span> <span>{{sr.description}}</span> <span style="color:orange">{{st.ss_name}}</span><br>
+
+        <p>Customer Name : {{u.u_f_name}} {{u.u_l_name}}</p> <p>Service Date and Time : {{sr.description}}</p> <p style="color:orange">Status : {{st.ss_name}}</p><br>
         {% if sr.ss_id!=2 %}
         <a href="/pprofile/{{"accept"}}/{{sr.sr_id}}">Accept</a> <a href="/pprofile/{{"reject"}}/{{sr.sr_id}}">Reject</a>
 
@@ -132,6 +133,8 @@
             <span style="color:green">{{st.ss_name}}</span><br>
         {% elif sr.ss_id==5 %}
             <span style="color:orange">{{st.ss_name}}</span><br>
+        {% elif sr.ss_id==6 %}
+            <span style="color:red">{{st.ss_name}}</span><br>
         {% endif %}
 
     </div>

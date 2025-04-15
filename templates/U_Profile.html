@@ -88,6 +88,7 @@
     {% for s in services %}
         {% if s.s_id==p.s_id %}
             <p>Service : {{s.s_name}}</p>
+            <p>Price : {{p.price}}</p>
             <form action="/uprofile/req_s/{{p.p_id}}/{{user.u_id}}/{{p.s_id}}" method="POST">
     <label for="date">Select Date:</label>
     <input type="date" id="date" name="date" required> <br>
@@ -138,19 +139,23 @@
         {% for p in professionals %}
             {% if p.p_id==sr.p_id %}
                 {% for s in service_stat %}
+
                     {% if s.ss_id==sr.ss_id %}
                     <p>{{p.p_f_name}}{{p.p_l_name}}</p>
                     <p>{{sr.description}}</p>
-
                     {% if sr.ss_id==5 %}
                         <a href="/uprofile/{{"Completed"}}/{{sr.sr_id}}">Completed</a>
                     {% else %}
                         <p>{{s.ss_name}}</p>
                     {% endif %}
+                    {% if s.ss_id!=6 and s.ss_id!=2 and s.ss_id!=3 %}
+                    <a href="/uprofile/{{"cancel_bk"}}/{{sr.sr_id}}">Cancel Booking</a>
+                    {% endif %}
                     {% endif %}
                 {% endfor %}
             {% endif %}
         {% endfor %}
+    <hr>
     {% endif %}
 {% endfor %}
 </div>
